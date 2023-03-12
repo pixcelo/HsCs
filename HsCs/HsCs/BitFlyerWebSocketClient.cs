@@ -31,21 +31,32 @@ namespace HsCs
 
             while (_webSocket.State == WebSocketState.Open)
             {
-                var result = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                var jsonString = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
-                // Ignore any message that is not a JSON - RPC notification
-                if (!jsonString.StartsWith(@"{""jsonrpc"":""2.0"",""method"":""", StringComparison.Ordinal))
+                try
                 {
-                    continue;
+                    var result = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    var jsonString = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+                    // Ignore any message that is not a JSON - RPC notification
+                    if (!jsonString.StartsWith(@"{""jsonrpc"":""2.0"",""method"":""", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    var jsonDocument = JsonDocument.Parse(jsonString);
+                    var respnse = JsonSerializer.Deserialize<BitFlyerResponse>(jsonDocument.RootElement.GetProperty("params").GetRawText(), jsonOptions);
+
+                    foreach (var execution in respnse.Message)
+                    {
+                        onExecution?.Invoke(execution);
+                    }
                 }
-
-                var jsonDocument = JsonDocument.Parse(jsonString);                
-                var respnse = JsonSerializer.Deserialize<BitFlyerResponse>(jsonDocument.RootElement.GetProperty("params").GetRawText(), jsonOptions);
-
-                foreach (var execution in respnse.Message)
+                catch (WebSocketException ex)
                 {
-                    onExecution?.Invoke(execution);
+                    Console.WriteLine($"WebSocketException: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
                 }
             }
 
