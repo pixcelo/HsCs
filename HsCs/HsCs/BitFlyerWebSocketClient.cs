@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using System.Net.Http;
+using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,6 +10,7 @@ namespace HsCs
     {
         private readonly Uri _uri;
         private ClientWebSocket _webSocket;
+        private readonly HttpClient _httpClient = new HttpClient();
 
         public BitFlyerWebSocketClient(Uri uri)
         {
@@ -70,7 +72,22 @@ namespace HsCs
                 await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
             }
         }
-    }    
+
+        // TODO: 修正
+        /// <summary>
+        /// 取引所の状態を確認：毎日午前 4 時 00 分～午前 4 時 10 分、定期メンテナンス（時間帯は前後する）
+        /// </summary>
+        /// <returns></returns>
+        //private async Task<bool> IsTradingSuspended()
+        //{
+        //    var response = await _httpClient.GetAsync("https://api.bitflyer.com/v1/gethealth");
+        //    var responseContent = await response.Content.ReadAsStringAsync();
+        //    var responseJson = JObject.Parse(responseContent);
+        //    var status = responseJson.Value<string>("status");
+        //    return status == "STOP";
+        //}
+    }
+
 
     public class BitFlyerResponse
     {
