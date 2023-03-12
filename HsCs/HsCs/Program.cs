@@ -4,7 +4,7 @@ namespace hscs
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             var client = new BitFlyerWebSocketClient(new Uri("wss://ws.lightstream.bitflyer.com/json-rpc"));
             await client.StartAsync((execution) =>
