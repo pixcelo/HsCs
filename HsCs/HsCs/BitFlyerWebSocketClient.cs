@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -55,10 +56,9 @@ namespace HsCs
                 catch (WebSocketException ex)
                 {
                     Console.WriteLine($"WebSocketException: {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Exception: {ex.Message}");
+                    Console.WriteLine($"Restart WebSocket");
+                    await Task.Delay(5000);
+                    await StartAsync(onExecution);
                 }
             }
 
