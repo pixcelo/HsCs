@@ -57,13 +57,23 @@ namespace HsCs
                 catch (WebSocketException ex)
                 {
                     Console.WriteLine($"WebSocketException: {ex.Message}");
-                    Console.WriteLine($"Restart WebSocket");
-                    await Task.Delay(5000);
-                    await StartAsync(onExecution);
+                    await ReStartAsync(onExecution);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                    await ReStartAsync(onExecution);
                 }
             }
 
             await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+        }
+
+        private async Task ReStartAsync(Action<BitFlyerExecution>  onExecution)
+        {
+            Console.WriteLine($"Restart WebSocket");
+            await Task.Delay(5000);
+            await StartAsync(onExecution);
         }
 
         public async Task StopAsync()
