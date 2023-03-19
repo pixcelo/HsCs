@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HsCs.Models;
+using System;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
