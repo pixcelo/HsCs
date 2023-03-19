@@ -47,9 +47,9 @@ namespace HsCs
                     }
 
                     var jsonDocument = JsonDocument.Parse(jsonString);
-                    var respnse = JsonSerializer.Deserialize<BitFlyerResponse>(jsonDocument.RootElement.GetProperty("params").GetRawText(), jsonOptions);
+                    var response = JsonSerializer.Deserialize<BitFlyerResponse>(jsonDocument.RootElement.GetProperty("params").GetRawText(), jsonOptions);
 
-                    foreach (var execution in respnse.Message)
+                    foreach (var execution in response.Message)
                     {
                         onExecution?.Invoke(execution);
                     }
