@@ -91,7 +91,7 @@ namespace HsCs
         /// <summary>
         /// 約定確率を更新（ベイズ更新）
         /// </summary>
-        /// <param name="BitFlyerExecution"></param>
+        /// <param name="executionData"></param>
         /// <param name="offsets"></param>
         /// <returns></returns>
         private List<double> UpdateProbabilities(List<BitFlyerExecution> executionData, List<double> offsets)
