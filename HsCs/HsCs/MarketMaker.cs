@@ -41,7 +41,8 @@ namespace HsCs
         /// <returns></returns>
         private double CalculateEprofit(double bp, double sp, double sellPrice, double buyPrice)
         {
-            return bp * sp * (sellPrice - buyPrice);
+            //return bp * sp * (sellPrice - buyPrice);
+            return sellPrice * sp - buyPrice * bp;
         }
 
         /// <summary>
