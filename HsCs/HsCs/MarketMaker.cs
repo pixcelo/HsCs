@@ -1,4 +1,6 @@
-﻿namespace HsCs
+﻿using HsCs.Models;
+
+namespace HsCs
 {
     public class MarketMaker
     {
@@ -79,6 +81,74 @@
             }
 
             return (BestBuyOffset: bestBuyOffset, BestSellOffset: bestSellOffset);
+        }
+
+        private double CalculateBetaMean(double alpha, double beta)
+        {
+            return alpha / (alpha + beta);
+        }
+
+        /// <summary>
+        /// 約定確率を更新（ベイズ更新）
+        /// </summary>
+        /// <param name="BitFlyerExecution"></param>
+        /// <param name="offsets"></param>
+        /// <returns></returns>
+        private List<double> UpdateProbabilities(List<BitFlyerExecution> executionData, List<double> offsets)
+        {
+            List<double> updatedProbabilities = new List<double>();
+
+            foreach (double offset in offsets)
+            {
+                double alpha = 1; // 事前分布のαパラメータ
+                double beta = 1;  // 事前分布のβパラメータ
+
+                foreach (var data in executionData)
+                {
+                    double price = recentMidPrices.Last() + offset;
+
+                    // 買い指値の場合、指値価格よりも安値で約定していたら約定できたと仮定する
+                    if (data.Side == "BUY")
+                    {
+                        if (price >= data.Price)
+                        {
+                            alpha += 1;
+                        }
+                        else
+                        {
+                            beta += 1;
+                        }
+                    }
+
+                    // 売り指値の場合、指値価格よりも高値で約定していたら約定できたと仮定する
+                    if (data.Side == "SELL")
+                    {
+                        if (price <= data.Price)
+                        {
+                            alpha += 1;
+                        }
+                        else
+                        {
+                            beta += 1;
+                        }
+                    }
+
+                }
+
+                updatedProbabilities.Add(CalculateBetaMean(alpha, beta));
+            }
+
+            return updatedProbabilities;
+        }
+
+        public List<double> UpdateBuyProbabilities(List<BitFlyerExecution> buyExecutionData)
+        {
+            return UpdateProbabilities(buyExecutionData, Boffset);
+        }
+
+        public List<double> UpdateSellProbabilities(List<BitFlyerExecution> sellExecutionData)
+        {
+            return UpdateProbabilities(sellExecutionData, Soffset);
         }
     }
 }

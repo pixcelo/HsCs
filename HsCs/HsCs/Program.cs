@@ -1,4 +1,5 @@
 ﻿using HsCs;
+using HsCs.Models;
 
 namespace hscs
 {
@@ -6,13 +7,63 @@ namespace hscs
     {
         static async Task Main()
         {
+            // 約定履歴のリスト
+            var executions = new List<BitFlyerExecution>();
+
+            var boffset = new List<double>() { -500, -400, -300, -200, -100 };
+            var soffset = new List<double>() { 500, 400, 300, 200, 100 };
+            const int SECONDS_TO_TRACK = 10;
+
+            var markertMaker = new MarketMaker(SECONDS_TO_TRACK, boffset, soffset);
+            var priceTracker = new PriceTracker(SECONDS_TO_TRACK);            
+
+            // webSocket接続
             var client = new BitFlyerWebSocketClient(new Uri("wss://ws.lightstream.bitflyer.com/json-rpc"));
             await client.StartAsync((execution) =>
-            {
+            {                
                 Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price} JPY ({execution.ExecDate})");
+
+                // 約定履歴のリストには、常に最新 N件を保持する
+                UpdateExecutions(executions, execution);
+
+                // 中央値を計算
+                List<double> prices = priceTracker.GetPrices(execution.ExecDate, execution.Price);
+                
+                int window = 10;                
+
+                if (prices.Count > window)
+                {
+                    // ヒストリカル・ボラティリティを計算
+                    var hishistoricalVolatility = new HistoricalVolatility(prices, window);
+                    var hv = hishistoricalVolatility.Calculate();
+
+                    var median = new Median(prices);
+                    markertMaker.AddMidPrice(median.GetValue());
+
+                    // 約定確率を計算
+                    var buyExcutions = executions.Where(x => x.Side == "BUY").ToList();
+                    var buyProbabilities = markertMaker.UpdateBuyProbabilities(buyExcutions);
+                    var sellExcutions = executions.Where(x => x.Side == "SELL").ToList();
+                    var sellProbabilities = markertMaker.UpdateSellProbabilities(sellExcutions);
+
+                    // 収益機会が最大となるBestOffset(B, S)を計算
+                    var (bestBuyOffset, bestSellOffset) = markertMaker.CalculateBestOffset(buyProbabilities, sellProbabilities, hv);
+                }
+
             });
         }
+
+        private static void UpdateExecutions(List<BitFlyerExecution> executions, BitFlyerExecution execution)
+        {
+            const int MAX_COUNT = 100;
+
+            executions.Add(execution);
+
+            // MAXを超えた場合、最も古いアイテムを削除
+            if (executions.Count > MAX_COUNT)
+            {
+                executions.RemoveAt(0);
+            }
+        }
     }
-
-
 }

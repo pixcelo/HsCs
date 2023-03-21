@@ -28,9 +28,8 @@
             }
 
             prices.Add(price);
-#if DEBUG
-            GetTimeRange();
-#endif
+            //GetTimeRange();
+
             return prices.ToList();
         }
 
