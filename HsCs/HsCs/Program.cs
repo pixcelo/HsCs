@@ -1,5 +1,6 @@
 ﻿using HsCs;
 using HsCs.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace hscs
 {
@@ -7,6 +8,13 @@ namespace hscs
     {
         static async Task Main()
         {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var bitFlyerClient = new BitFlyerClient(configuration);
+
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
 
