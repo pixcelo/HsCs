@@ -10,8 +10,8 @@ namespace hscs
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
 
-            var boffset = GenerateOffsetList(5, -100);
-            var soffset = GenerateOffsetList(5, 100);
+            var boffset = GenerateOffsetList(10, -100);
+            var soffset = GenerateOffsetList(10, 100);
             const int SECONDS_TO_TRACK = 10;
 
             var markertMaker = new MarketMaker(SECONDS_TO_TRACK, boffset, soffset);
@@ -21,7 +21,7 @@ namespace hscs
             var client = new BitFlyerWebSocketClient(new Uri("wss://ws.lightstream.bitflyer.com/json-rpc"));
             await client.StartAsync((execution) =>
             {                
-                //Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price} JPY ({execution.ExecDate})");
+                Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price} JPY ({execution.ExecDate})");
 
                 // 約定履歴のリストには、常に最新 N件を保持する
                 UpdateExecutions(executions, execution);
@@ -50,6 +50,7 @@ namespace hscs
                     var (bestBuyOffset, bestSellOffset) = markertMaker.CalculateBestOffset(buyProbabilities, sellProbabilities, hv);
 
                     Console.WriteLine($"bestBuyOffset: {bestBuyOffset.ToString()}, bestSellOffset: {bestSellOffset.ToString()}");
+                    //Console.WriteLine($"bestBuyOffset: {(bestBuyOffset + median.GetValue()).ToString()}, bestSellOffset: {(bestSellOffset + median.GetValue()).ToString()}");
                 }
 
             });
@@ -62,7 +63,7 @@ namespace hscs
         /// <param name="execution"></param>
         private static void UpdateExecutions(List<BitFlyerExecution> executions, BitFlyerExecution execution)
         {
-            const int MAX_COUNT = 100;
+            const int MAX_COUNT = 10;
 
             executions.Add(execution);
 

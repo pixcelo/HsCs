@@ -105,34 +105,22 @@ namespace HsCs
 
                 foreach (var data in executionData)
                 {
-                    double price = recentMidPrices.Last() + offset;
+                    double offsetPrice = recentMidPrices.Last() + offset;
 
                     // 買い指値の場合、指値価格よりも安値で約定していたら約定できたと仮定する
-                    if (data.Side == "BUY")
-                    {
-                        if (price >= data.Price)
-                        {
-                            alpha += 1;
-                        }
-                        else
-                        {
-                            beta += 1;
-                        }
-                    }
-
                     // 売り指値の場合、指値価格よりも高値で約定していたら約定できたと仮定する
-                    if (data.Side == "SELL")
-                    {
-                        if (price <= data.Price)
-                        {
-                            alpha += 1;
-                        }
-                        else
-                        {
-                            beta += 1;
-                        }
-                    }
+                    bool isExecution = data.Side == "BUY"
+                                       ? data.Price <= offsetPrice
+                                       : data.Price >= offsetPrice;
 
+                    if (isExecution)
+                    {
+                        alpha += 1;
+                    }
+                    else
+                    {
+                        beta += 1;
+                    }                
                 }
 
                 updatedProbabilities.Add(CalculateBetaMean(alpha, beta));
@@ -144,6 +132,7 @@ namespace HsCs
         public List<double> UpdateBuyProbabilities(List<BitFlyerExecution> buyExecutionData)
         {
             return UpdateProbabilities(buyExecutionData, Boffset);
+
         }
 
         public List<double> UpdateSellProbabilities(List<BitFlyerExecution> sellExecutionData)
