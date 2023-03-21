@@ -40,7 +40,7 @@
         /// <returns></returns>
         private List<int> CountExecutions(string side)
         {
-            var executions = new List<int>(new int[this.prices.Count]);
+            var executions = new List<int>(new int[this.offsetNum]);
 
             foreach (double price in this.prices)
             {
