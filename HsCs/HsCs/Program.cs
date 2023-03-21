@@ -10,8 +10,8 @@ namespace hscs
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
 
-            var boffset = GenerateOffsetList(5, -100);  //new List<double>() { -500, -400, -300, -200, -100 };
-            var soffset = GenerateOffsetList(5, 100); // new List<double>() { 500, 400, 300, 200, 100 };
+            var boffset = GenerateOffsetList(5, -100);
+            var soffset = GenerateOffsetList(5, 100);
             const int SECONDS_TO_TRACK = 10;
 
             var markertMaker = new MarketMaker(SECONDS_TO_TRACK, boffset, soffset);
@@ -55,6 +55,11 @@ namespace hscs
             });
         }
 
+        /// <summary>
+        /// 約定履歴のリストを更新
+        /// </summary>
+        /// <param name="executions"></param>
+        /// <param name="execution"></param>
         private static void UpdateExecutions(List<BitFlyerExecution> executions, BitFlyerExecution execution)
         {
             const int MAX_COUNT = 100;
