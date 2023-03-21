@@ -10,8 +10,8 @@ namespace hscs
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
 
-            var boffset = new List<double>() { -500, -400, -300, -200, -100 };
-            var soffset = new List<double>() { 500, 400, 300, 200, 100 };
+            var boffset = GenerateOffsetList(5, -100);  //new List<double>() { -500, -400, -300, -200, -100 };
+            var soffset = GenerateOffsetList(5, 100); // new List<double>() { 500, 400, 300, 200, 100 };
             const int SECONDS_TO_TRACK = 10;
 
             var markertMaker = new MarketMaker(SECONDS_TO_TRACK, boffset, soffset);
@@ -21,7 +21,7 @@ namespace hscs
             var client = new BitFlyerWebSocketClient(new Uri("wss://ws.lightstream.bitflyer.com/json-rpc"));
             await client.StartAsync((execution) =>
             {                
-                Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price} JPY ({execution.ExecDate})");
+                //Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price} JPY ({execution.ExecDate})");
 
                 // 約定履歴のリストには、常に最新 N件を保持する
                 UpdateExecutions(executions, execution);
@@ -48,6 +48,8 @@ namespace hscs
 
                     // 収益機会が最大となるBestOffset(B, S)を計算
                     var (bestBuyOffset, bestSellOffset) = markertMaker.CalculateBestOffset(buyProbabilities, sellProbabilities, hv);
+
+                    Console.WriteLine($"bestBuyOffset: {bestBuyOffset.ToString()}, bestSellOffset: {bestSellOffset.ToString()}");
                 }
 
             });
@@ -64,6 +66,22 @@ namespace hscs
             {
                 executions.RemoveAt(0);
             }
+        }
+
+        /// <summary>
+        /// 任意の離散化したステップ価格リスト i…n を作成
+        /// </summary>
+        /// <returns></returns>
+        private static List<double> GenerateOffsetList(int offsetNum, int step)
+        {
+            var list = new List<double>();
+
+            for (int i = 1; i <= offsetNum; i++)
+            {
+                list.Add(i * step);
+            }
+
+            return list;
         }
     }
 }
