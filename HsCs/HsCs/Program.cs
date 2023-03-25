@@ -37,7 +37,7 @@ namespace hscs
                 // 中央値を計算
                 List<double> prices = priceTracker.GetPrices(execution.ExecDate, execution.Price);
                 
-                int window = 10;                
+                int window = 10;
 
                 if (prices.Count > window)
                 {
@@ -62,8 +62,8 @@ namespace hscs
                     
                     // 指値注文
                     //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
-                    var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.01);
-                    var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", median.GetValue() + bestSellOffset, 0.01);
+                    //var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.01);
+                    //var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", median.GetValue() + bestSellOffset, 0.01);
 
                 }
 

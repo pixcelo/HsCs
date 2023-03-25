@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace HsCs.Models
+namespace HsCs
 {
     public class BitFlyerExecution
     {
