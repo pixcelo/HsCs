@@ -21,6 +21,12 @@ namespace HsCs
 
         public async Task StartAsync(Action<BitFlyerExecution> onExecution)
         {
+            while (await IsTradingSuspended())
+            {
+                Console.WriteLine("メンテナンス中です。再試行します。");
+                await Task.Delay(TimeSpan.FromMinutes(1));
+            }
+
             _webSocket = new ClientWebSocket();
             await _webSocket.ConnectAsync(_uri, CancellationToken.None);
 
@@ -73,6 +79,13 @@ namespace HsCs
         {
             Console.WriteLine($"Restart WebSocket");
             await Task.Delay(5000);
+
+            while (await IsTradingSuspended())
+            {
+                Console.WriteLine("メンテナンス中です。再試行します。");
+                await Task.Delay(TimeSpan.FromMinutes(1));
+            }
+
             await StartAsync(onExecution);
         }
 
@@ -84,18 +97,17 @@ namespace HsCs
             }
         }
 
-        // TODO: 修正
         /// <summary>
         /// 取引所の状態を確認：毎日午前 4 時 00 分～午前 4 時 10 分、定期メンテナンス（時間帯は前後する）
         /// </summary>
         /// <returns></returns>
-        //private async Task<bool> IsTradingSuspended()
-        //{
-        //    var response = await _httpClient.GetAsync("https://api.bitflyer.com/v1/gethealth");
-        //    var responseContent = await response.Content.ReadAsStringAsync();
-        //    var responseJson = JObject.Parse(responseContent);
-        //    var status = responseJson.Value<string>("status");
-        //    return status == "STOP";
-        //}
+        private async Task<bool> IsTradingSuspended()
+        {
+            var response = await _httpClient.GetAsync("https://api.bitflyer.com/v1/gethealth");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            using var jsonDocument = JsonDocument.Parse(responseContent);
+            var status = jsonDocument.RootElement.GetProperty("status").GetString();
+            return status == "STOP";
+        }
     }
 }
