@@ -18,8 +18,8 @@ namespace hscs
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
 
-            var boffset = GenerateOffsetList(10, -100);
-            var soffset = GenerateOffsetList(10, 100);
+            var boffset = GenerateOffsetList(30, -10);
+            var soffset = GenerateOffsetList(30, 10);
             const int SECONDS_TO_TRACK = 10;
 
             var markertMaker = new MarketMaker(SECONDS_TO_TRACK, boffset, soffset);
@@ -59,6 +59,12 @@ namespace hscs
 
                     Console.WriteLine($"bestBuyOffset: {bestBuyOffset.ToString()}, bestSellOffset: {bestSellOffset.ToString()}");
                     //Console.WriteLine($"bestBuyOffset: {(bestBuyOffset + median.GetValue()).ToString()}, bestSellOffset: {(bestSellOffset + median.GetValue()).ToString()}");
+                    
+                    // 指値注文
+                    //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
+                    var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.01);
+                    var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", median.GetValue() + bestSellOffset, 0.01);
+
                 }
 
             });
