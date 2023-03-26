@@ -105,7 +105,8 @@ namespace hscs
                     //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
                     var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", buyOrderPrice, MINUTE_TO_EXPIRE, orderSize);
                     var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", sellOrderPrice, MINUTE_TO_EXPIRE, orderSize);
-
+                    Console.WriteLine($"place order : {buyOrderId} BUY");
+                    Console.WriteLine($"place order : {sellOrderId} SELL");
                 }
 
             });
