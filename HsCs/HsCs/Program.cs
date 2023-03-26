@@ -60,6 +60,10 @@ namespace hscs
                     Console.WriteLine($"bestBuyOffset: {bestBuyOffset.ToString()}, bestSellOffset: {bestSellOffset.ToString()}");
                     //Console.WriteLine($"bestBuyOffset: {(bestBuyOffset + median.GetValue()).ToString()}, bestSellOffset: {(bestSellOffset + median.GetValue()).ToString()}");
 
+                    // 証拠金残高の取得
+                    double collateral = await bitFlyerClient.GetCollateral();
+                    Console.WriteLine($"証拠金残高: {collateral}");
+
                     // 現在のポジション情報を取得
                     var openOrders = await bitFlyerClient.GetOpenOrders();
 

@@ -76,6 +76,39 @@ namespace HsCs
         }
 
         /// <summary>
+        /// 証拠金の状態を取得
+        /// </summary>
+        /// <returns></returns>
+        public async Task<double> GetCollateral()
+        {
+            string path = "/v1/me/getcollateral";
+            string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+            string method = "GET";
+            string body = "";
+
+            var message = timestamp + method + path + body;
+
+            var signature = CreateSignature(_apiSecret, message);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "https://api.bitflyer.com" + path);
+            request.Headers.Add("ACCESS-KEY", _apiKey);
+            request.Headers.Add("ACCESS-TIMESTAMP", timestamp);
+            request.Headers.Add("ACCESS-SIGN", signature);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            string jsonResponse = await response.Content.ReadAsStringAsync();
+
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var collateralInfo = JsonSerializer.Deserialize<BitFlyerCollateralInfo>(jsonResponse, jsonSerializerOptions);
+            return collateralInfo.Collateral;
+        }
+
+        /// <summary>
         /// アクティブな注文一覧を取得する
         /// </summary>
         /// <returns></returns>
