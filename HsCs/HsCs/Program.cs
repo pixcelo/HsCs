@@ -72,10 +72,11 @@ namespace hscs
                     double orderSize = 0.01;
                     double buyOrderPrice = median.GetValue() + bestBuyOffset;
                     double sellOrderPrice = median.GetValue() + bestBuyOffset;
+
                     //int leverage = 1;
                     //double requiredMargin = CalculateRequiredMargin(orderSize, buyOrderPrice, leverage);
 
-                    // 現在のポジション情報を取得
+                    // 現在のアクティブな注文を取得
                     var openOrders = await bitFlyerClient.GetOpenOrders();
 
                     // 未約定の指値注文が存在する場合、何もしない
