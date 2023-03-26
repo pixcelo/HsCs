@@ -97,16 +97,18 @@ namespace hscs
                             var orderPrice = openOrder.Side == "BUY" ? buyOrderPrice : sellOrderPrice;
                             var orderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", openOrder.Side, orderPrice, MINUTE_TO_EXPIRE, orderSize);
                         }
-
-                        return;
+                      
+                    }
+                    else
+                    {
+                        // 指値注文                    
+                        //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
+                        var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", buyOrderPrice, MINUTE_TO_EXPIRE, orderSize);
+                        var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", sellOrderPrice, MINUTE_TO_EXPIRE, orderSize);
+                        Console.WriteLine($"place order : {buyOrderId} BUY");
+                        Console.WriteLine($"place order : {sellOrderId} SELL");
                     }
 
-                    // 指値注文                    
-                    //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
-                    var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", buyOrderPrice, MINUTE_TO_EXPIRE, orderSize);
-                    var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", sellOrderPrice, MINUTE_TO_EXPIRE, orderSize);
-                    Console.WriteLine($"place order : {buyOrderId} BUY");
-                    Console.WriteLine($"place order : {sellOrderId} SELL");
                 }
 
             });
