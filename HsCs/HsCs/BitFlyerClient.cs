@@ -46,6 +46,25 @@ namespace HsCs
             return jsonDocument.RootElement.GetProperty("child_order_acceptance_id").GetString();
         }
 
+        public async Task<string> SendMarketOrderAsync(string productCode, string side, double size)
+        {
+            var path = "/v1/me/sendchildorder";
+            var body = JsonSerializer.Serialize(new
+            {
+                product_code = productCode,
+                child_order_type = "MARKET",
+                side,
+                size
+            });
+
+            var response = await SendRequestAsync(HttpMethod.Post, path, body);
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var jsonDocument = JsonDocument.Parse(jsonResponse);
+
+            return jsonDocument.RootElement.GetProperty("child_order_acceptance_id").GetString();
+        }
+
+
         public async Task<bool> CancelOrderAsync(string productCode, string orderId)
         {
             var path = $"/v1/me/cancelchildorder";
@@ -143,6 +162,12 @@ namespace HsCs
             return JsonSerializer.Deserialize<List<BitFlyerOrder>>(jsonResponse, jsonSerializerOptions);
         }
 
+        /// <summary>
+        /// 建玉を閾値で損切する
+        /// </summary>
+        /// <param name="productCode"></param>
+        /// <param name="lossThreshold"></param>
+        /// <returns></returns>
         public async Task CutLossAsync(string productCode, double lossThreshold)
         {
             // 建玉一覧を取得
@@ -156,6 +181,7 @@ namespace HsCs
             {
                 string side = position.Side == "BUY" ? "SELL" : "BUY";
                 await SendMarketOrderAsync(productCode, side, position.Size);
+                Console.WriteLine($"Loss cut {position.Side} posistion");
             }
         }
 
@@ -164,7 +190,7 @@ namespace HsCs
         /// </summary>
         /// <param name="productCode"></param>
         /// <returns></returns>
-        public async Task<List<BitFlyerPosition>> GetPositionsAsync(string productCode)
+        private async Task<List<BitFlyerPosition>> GetPositionsAsync(string productCode)
         {
             string path = $"/v1/me/getpositions?product_code={productCode}";
            
@@ -173,23 +199,7 @@ namespace HsCs
             return JsonSerializer.Deserialize<List<BitFlyerPosition>>(jsonResponse);
         }
 
-        public async Task<string> SendMarketOrderAsync(string productCode, string side, double size)
-        {
-            var path = "/v1/me/sendchildorder";
-            var body = JsonSerializer.Serialize(new
-            {
-                product_code = productCode,
-                child_order_type = "MARKET",
-                side,
-                size
-            });
-
-            var response = await SendRequestAsync(HttpMethod.Post, path, body);
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var jsonDocument = JsonDocument.Parse(jsonResponse);
-
-            return jsonDocument.RootElement.GetProperty("child_order_acceptance_id").GetString();
-        }
+        
 
         private string CreateSignature(string secret, string message)
         {
