@@ -78,7 +78,7 @@ namespace HsCs
         private async Task ReStartAsync(Action<BitFlyerExecution>  onExecution)
         {
             Console.WriteLine($"Restart WebSocket");
-            await Task.Delay(5000);
+            await Task.Delay(1000);
 
             while (await IsTradingSuspended())
             {
