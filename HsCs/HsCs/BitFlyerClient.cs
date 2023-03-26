@@ -24,7 +24,12 @@ namespace HsCs
             _apiSecret = configuration["BitFlyer:ApiSecret"];
         }
 
-        public async Task<string> SendOrderAsync(string productCode, string side, double price, double size)
+        public async Task<string> SendOrderAsync(
+            string productCode,
+            string side,
+            double price,
+            int minute_to_expire,
+            double size)
         {
             var path = "/v1/me/sendchildorder";
             var body = JsonSerializer.Serialize(new
@@ -33,6 +38,7 @@ namespace HsCs
                 child_order_type = "LIMIT",
                 side,
                 price,
+                minute_to_expire, // 期限切れまでの時間を分で指定: 省略した場合の値は 43200 (30 日間)
                 size
             });
 

@@ -68,23 +68,29 @@ namespace hscs
                     double orderSize = 0.01;
                     double buyOrderPrice = median.GetValue() + bestBuyOffset;
                     double sellOrderPrice = median.GetValue() + bestBuyOffset;
-                    int leverage = 1;
-                    double requiredMargin = CalculateRequiredMargin(orderSize, buyOrderPrice, leverage);
+                    //int leverage = 1;
+                    //double requiredMargin = CalculateRequiredMargin(orderSize, buyOrderPrice, leverage);
 
                     // 現在のポジション情報を取得
                     var openOrders = await bitFlyerClient.GetOpenOrders();
 
-                    // 未約定の指値注文が存在する場合、注文を出さない
+                    // 未約定の指値注文が存在する場合、bestOffsetで指値を出し出し直す
                     if (openOrders.Count > 0)
                     {
                         Console.WriteLine("未約定の指値注文が存在します");
+
+                        // 未約定の指値注文をキャンセル
+                        
+                        // 指値を出し直す
+
                         return;
                     }
 
                     // 指値注文
+                    int minute_to_expire = 1;
                     //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
-                    //var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", buyOrderPrice, orderSize);
-                    //var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", sellOrderPrice, orderSize);
+                    var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", buyOrderPrice, minute_to_expire, orderSize);
+                    var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", sellOrderPrice, minute_to_expire, orderSize);
 
                 }
 
