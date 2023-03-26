@@ -31,6 +31,9 @@ namespace hscs
             {                
                 Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price.ToString("#,0")} JPY ({execution.ExecDate})");
 
+                // 建玉一覧を取得
+                var positions = bitFlyerClient.GetPositionsAsync("FX_BTC_JPY");
+
                 // 約定履歴のリストには、常に最新 N件を保持する
                 UpdateExecutions(executions, execution);
 
@@ -74,15 +77,10 @@ namespace hscs
                     // 現在のポジション情報を取得
                     var openOrders = await bitFlyerClient.GetOpenOrders();
 
-                    // 未約定の指値注文が存在する場合、bestOffsetで指値を出し出し直す
+                    // 未約定の指値注文が存在する場合、何もしない
                     if (openOrders.Count > 0)
                     {
                         Console.WriteLine("未約定の指値注文が存在します");
-
-                        // 未約定の指値注文をキャンセル
-                        
-                        // 指値を出し直す
-
                         return;
                     }
 

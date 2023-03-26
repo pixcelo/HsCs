@@ -1,17 +1,14 @@
-﻿using System;
-using System.Net.Http;
+﻿using HsCs.Models;
+using Microsoft.Extensions.Configuration;
+using System.Drawing;
 using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using HsCs.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace HsCs
 {
-    class BitFlyerClient
+    public class BitFlyerClient
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
@@ -120,8 +117,7 @@ namespace HsCs
         /// <returns></returns>
         public async Task<List<BitFlyerOrder>> GetOpenOrders()
         {
-            string path = "/v1/me/getchildorders?product_code=FX_BTC_JPY&child_order_state=ACTIVE";
-            //string timestamp = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+            string path = "/v1/me/getchildorders?product_code=FX_BTC_JPY&child_order_state=ACTIVE";            
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
             string method = "GET";
             string body = "";
@@ -145,6 +141,54 @@ namespace HsCs
             };
 
             return JsonSerializer.Deserialize<List<BitFlyerOrder>>(jsonResponse, jsonSerializerOptions);
+        }
+
+        public async Task CutLossAsync(string productCode, double lossThreshold)
+        {
+            // 建玉一覧を取得
+            var positions = await GetPositionsAsync(productCode);
+
+            // pnl のマイナスが lossThreshold 以下の建玉をフィルタリング
+            var positionsToCut = positions.Where(p => p.Pnl <= -lossThreshold).ToList();
+
+            // 損切りするために、ポジションごとに成行注文を発注
+            foreach (var position in positionsToCut)
+            {
+                string side = position.Side == "BUY" ? "SELL" : "BUY";
+                await SendMarketOrderAsync(productCode, side, position.Size);
+            }
+        }
+
+        /// <summary>
+        /// 建玉一覧を取得
+        /// </summary>
+        /// <param name="productCode"></param>
+        /// <returns></returns>
+        public async Task<List<BitFlyerPosition>> GetPositionsAsync(string productCode)
+        {
+            string path = $"/v1/me/getpositions?product_code={productCode}";
+           
+            var response = await SendRequestAsync(HttpMethod.Get, path, string.Empty);
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<BitFlyerPosition>>(jsonResponse);
+        }
+
+        public async Task<string> SendMarketOrderAsync(string productCode, string side, double size)
+        {
+            var path = "/v1/me/sendchildorder";
+            var body = JsonSerializer.Serialize(new
+            {
+                product_code = productCode,
+                child_order_type = "MARKET",
+                side,
+                size
+            });
+
+            var response = await SendRequestAsync(HttpMethod.Post, path, body);
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var jsonDocument = JsonDocument.Parse(jsonResponse);
+
+            return jsonDocument.RootElement.GetProperty("child_order_acceptance_id").GetString();
         }
 
         private string CreateSignature(string secret, string message)
