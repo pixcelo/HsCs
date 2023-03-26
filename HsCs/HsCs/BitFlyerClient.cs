@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -80,21 +81,31 @@ namespace HsCs
         /// <returns></returns>
         public async Task<List<BitFlyerOrder>> GetOpenOrders()
         {
-            string method = "GET";
             string path = "/v1/me/getchildorders?product_code=FX_BTC_JPY&child_order_state=ACTIVE";
+            //string timestamp = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-            string sign = GenerateSignature(timestamp, method, path, _apiSecret);
+            string method = "GET";
+            string body = "";
 
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("ACCESS-KEY", _apiKey);
-            _httpClient.DefaultRequestHeaders.Add("ACCESS-TIMESTAMP", timestamp);
-            _httpClient.DefaultRequestHeaders.Add("ACCESS-SIGN", sign);
-            _httpClient.DefaultRequestHeaders.Add("Content-Type", "application/json");
+            var message = timestamp + method + path + body;
 
-            HttpResponseMessage response = await _httpClient.GetAsync("https://api.bitflyer.com" + path);
-            string content = await response.Content.ReadAsStringAsync();
+            var signature = CreateSignature(_apiSecret, message);
+            
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "https://api.bitflyer.com" + path);
+            request.Headers.Add("ACCESS-KEY", _apiKey);
+            request.Headers.Add("ACCESS-TIMESTAMP", timestamp);
+            request.Headers.Add("ACCESS-SIGN", signature);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            string jsonResponse = await response.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<List<BitFlyerOrder>>(content);
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<List<BitFlyerOrder>>(jsonResponse, jsonSerializerOptions);
         }
 
         private string CreateSignature(string secret, string message)
@@ -105,15 +116,5 @@ namespace HsCs
             return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
 
-        private string GenerateSignature(string timestamp, string method, string path, string apiSecret, string requestBody = "")
-        {
-            string text = timestamp + method + path + requestBody;
-            var encoding = new UTF8Encoding();
-            byte[] key = encoding.GetBytes(apiSecret);
-            byte[] source = encoding.GetBytes(text);
-            using HMACSHA256 hmac = new HMACSHA256(key);
-            byte[] hash = hmac.ComputeHash(source);
-            return BitConverter.ToString(hash).ToLower().Replace("-", "");
-        }
     }
 }

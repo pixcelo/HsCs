@@ -51,6 +51,9 @@ namespace HsCs.Models
 
         [JsonPropertyName("total_commission")]
         public double TotalCommission { get; set; }
+
+        [JsonPropertyName("time_in_force")]
+        public double TimeInForce { get; set; }
     }
 
 }

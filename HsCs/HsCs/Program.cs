@@ -20,14 +20,14 @@ namespace hscs
 
             var boffset = GenerateOffsetList(30, -10);
             var soffset = GenerateOffsetList(30, 10);
-            const int SECONDS_TO_TRACK = 10;
+            const int SECONDS_TO_TRACK = 5;
 
             var markertMaker = new MarketMaker(SECONDS_TO_TRACK, boffset, soffset);
             var priceTracker = new PriceTracker(SECONDS_TO_TRACK);            
 
             // webSocket接続
             var client = new BitFlyerWebSocketClient(new Uri("wss://ws.lightstream.bitflyer.com/json-rpc"));
-            await client.StartAsync((execution) =>
+            await client.StartAsync(async (execution) =>
             {                
                 Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price} JPY ({execution.ExecDate})");
 
@@ -59,7 +59,17 @@ namespace hscs
 
                     Console.WriteLine($"bestBuyOffset: {bestBuyOffset.ToString()}, bestSellOffset: {bestSellOffset.ToString()}");
                     //Console.WriteLine($"bestBuyOffset: {(bestBuyOffset + median.GetValue()).ToString()}, bestSellOffset: {(bestSellOffset + median.GetValue()).ToString()}");
-                    
+
+                    // 現在のポジション情報を取得
+                    var openOrders = await bitFlyerClient.GetOpenOrders();
+
+                    // 未約定の指値注文が存在する場合、注文を出さない
+                    if (openOrders.Count > 0)
+                    {
+                        Console.WriteLine("未約定の指値注文が存在します");
+                        return;
+                    }
+
                     // 指値注文
                     //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
                     //var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.01);
