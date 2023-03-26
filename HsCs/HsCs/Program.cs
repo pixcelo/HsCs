@@ -29,7 +29,7 @@ namespace hscs
             var client = new BitFlyerWebSocketClient(new Uri("wss://ws.lightstream.bitflyer.com/json-rpc"));
             await client.StartAsync(async (execution) =>
             {                
-                Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price} JPY ({execution.ExecDate})");
+                Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price.ToString("#,0")} JPY ({execution.ExecDate})");
 
                 // 約定履歴のリストには、常に最新 N件を保持する
                 UpdateExecutions(executions, execution);
