@@ -64,6 +64,13 @@ namespace hscs
                     double collateral = await bitFlyerClient.GetCollateral();
                     Console.WriteLine($"証拠金残高: {collateral}");
 
+                    // 注文条件のチェック
+                    double orderSize = 0.01;
+                    double buyOrderPrice = median.GetValue() + bestBuyOffset;
+                    double sellOrderPrice = median.GetValue() + bestBuyOffset;
+                    int leverage = 1;
+                    double requiredMargin = CalculateRequiredMargin(orderSize, buyOrderPrice, leverage);
+
                     // 現在のポジション情報を取得
                     var openOrders = await bitFlyerClient.GetOpenOrders();
 
@@ -76,12 +83,41 @@ namespace hscs
 
                     // 指値注文
                     //var buyOrderId = bitFlyerClient.SendOrderAsync("BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.001);
-                    //var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", median.GetValue() + bestBuyOffset, 0.01);
-                    //var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", median.GetValue() + bestSellOffset, 0.01);
+                    //var buyOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "BUY", buyOrderPrice, orderSize);
+                    //var sellOrderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", "SELL", sellOrderPrice, orderSize);
 
                 }
 
             });
+        }
+
+        /// <summary>
+        /// 必要な証拠金を計算
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="price"></param>
+        /// <param name="leverage"></param>
+        /// <param name="positionMargin"></param>
+        /// <param name="orderMargin"></param>
+        /// <returns></returns>
+        public static double CalculateRequiredMargin(
+            double size,
+            double price,
+            int leverage,
+            double positionMargin,
+            double orderMargin)
+        {
+            // 証拠金率を計算
+            double marginRate = 1.0 / leverage;
+
+            // 建玉必要証拠金と注文必要証拠金を計算
+            double newPositionMargin = size * price * marginRate;
+            double newOrderMargin = newPositionMargin + orderMargin;
+
+            // 必要な証拠金額を計算
+            double requiredMargin = positionMargin + newOrderMargin;
+
+            return requiredMargin;
         }
 
         /// <summary>
