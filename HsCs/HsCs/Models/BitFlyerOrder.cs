@@ -53,7 +53,7 @@ namespace HsCs.Models
         public double TotalCommission { get; set; }
 
         [JsonPropertyName("time_in_force")]
-        public double TimeInForce { get; set; }
+        public string TimeInForce { get; set; }
     }
 
 }

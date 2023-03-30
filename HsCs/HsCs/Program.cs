@@ -1,19 +1,33 @@
 ﻿using HsCs;
 using HsCs.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace hscs
 {
     class Program
     {
         static async Task Main()
-        {
+        {     
+            // 設定ファイル読み込み
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var bitFlyerClient = new BitFlyerClient(configuration);
+            // ロガー
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .SetMinimumLevel(LogLevel.Information) // ログレベルの設定
+                    .AddConsole(); // コンソールへのログ出力
+            });
+
+            var logger = loggerFactory.CreateLogger<BitFlyerClient>();
+            logger.LogInformation("The application has started.");
+
+            // APIクライアント
+            var bitFlyerClient = new BitFlyerClient(configuration, logger);
 
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
@@ -23,6 +37,8 @@ namespace hscs
             const int SECONDS_TO_TRACK = 5;
 
             var markertMaker = new MarketMaker(SECONDS_TO_TRACK, boffset, soffset);
+
+            // 価格情報を保持
             var priceTracker = new PriceTracker(SECONDS_TO_TRACK);            
 
             // webSocket接続

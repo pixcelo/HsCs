@@ -1,6 +1,6 @@
 ﻿using HsCs.Models;
 using Microsoft.Extensions.Configuration;
-using System.Drawing;
+using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,12 +13,14 @@ namespace HsCs
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly string _apiSecret;
+        private readonly ILogger<BitFlyerClient> _logger;
 
-        public BitFlyerClient(IConfiguration configuration)
+        public BitFlyerClient(IConfiguration configuration, ILogger<BitFlyerClient> logger)
         {
             _httpClient = new HttpClient { BaseAddress = new Uri("https://api.bitflyer.com") };
             _apiKey = configuration["BitFlyer:ApiKey"];
             _apiSecret = configuration["BitFlyer:ApiSecret"];
+            _logger = logger;
         }
 
         public async Task<string> SendOrderAsync(
@@ -28,22 +30,31 @@ namespace HsCs
             int minute_to_expire,
             double size)
         {
-            var path = "/v1/me/sendchildorder";
-            var body = JsonSerializer.Serialize(new
+            try
+            {                
+                var path = "/v1/me/sendchildorder";
+                var body = JsonSerializer.Serialize(new
+                {
+                    product_code = productCode,
+                    child_order_type = "LIMIT",
+                    side,
+                    price,
+                    minute_to_expire, // 期限切れまでの時間を分で指定: 省略した場合の値は 43200 (30 日間)
+                    size
+                });
+
+                var response = await SendRequestAsync(HttpMethod.Post, path, body);
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var jsonDocument = JsonDocument.Parse(jsonResponse);
+
+                return jsonDocument.RootElement.GetProperty("child_order_acceptance_id").GetString();
+            }
+            catch (Exception ex)
             {
-                product_code = productCode,
-                child_order_type = "LIMIT",
-                side,
-                price,
-                minute_to_expire, // 期限切れまでの時間を分で指定: 省略した場合の値は 43200 (30 日間)
-                size
-            });
+                _logger.LogError(ex, "SendOrderAsyncでエラーが発生しました。");
+            }
 
-            var response = await SendRequestAsync(HttpMethod.Post, path, body);
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var jsonDocument = JsonDocument.Parse(jsonResponse);
-
-            return jsonDocument.RootElement.GetProperty("child_order_acceptance_id").GetString();
+            return string.Empty;
         }
 
         public async Task<string> SendMarketOrderAsync(string productCode, string side, double size)
