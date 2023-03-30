@@ -38,8 +38,13 @@ namespace hscs
                 Console.WriteLine($"Executed {execution.Side} {execution.Size} BTC at {execution.Price.ToString("#,0")} JPY ({execution.ExecDate})");
 
                 // 建玉の損切り
-                double lossThreshold = 1000; // 損切り閾値
+                double lossThreshold = 200; // 損切り閾値
                 await bitFlyerClient.CutLossAsync("FX_BTC_JPY", lossThreshold);
+
+                //　建玉の利食い
+                double profitThreshold = 500;
+                await bitFlyerClient.TakeProfitAsync("FX_BTC_JPY", profitThreshold);
+
 
                 // 約定履歴のリストには、常に最新 N件を保持する
                 UpdateExecutions(executions, execution);

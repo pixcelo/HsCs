@@ -1,5 +1,6 @@
 ﻿using HsCs.Models;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
@@ -171,6 +172,32 @@ namespace HsCs
             };
 
             return JsonSerializer.Deserialize<List<BitFlyerOrder>>(jsonResponse, jsonSerializerOptions);
+        }
+
+
+        /// <summary>
+        /// 建玉を閾値で利食いする
+        /// </summary>
+        /// <param name="productCode"></param>
+        /// <param name="profitTarget"></param>
+        /// <returns></returns>
+        public async Task TakeProfitAsync(string productCode, double profitTarget)
+        {
+            // 建玉一覧を取得
+            var positions = await GetPositionsAsync(productCode);
+
+            // pnl が profitTarget 以上の建玉をフィルタリング
+            var positionsToTakeProfit = positions.Where(p => p.Pnl >= profitTarget).ToList();
+
+            // 利食いするために、ポジションごとに成行注文を発注
+            foreach (var position in positionsToTakeProfit)
+            {
+                string side = position.Side == "BUY" ? "SELL" : "BUY";
+                await SendMarketOrderAsync(productCode, side, position.Size);
+                string message = $"Take profit from {position.Side} position";
+                Console.WriteLine(message);
+                _logger.Log(message);
+            }
         }
 
         /// <summary>
