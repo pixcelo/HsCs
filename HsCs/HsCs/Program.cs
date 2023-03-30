@@ -1,7 +1,6 @@
 ﻿using HsCs;
 using HsCs.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace hscs
 {
@@ -15,16 +14,7 @@ namespace hscs
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            // ロガー
-            using var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .SetMinimumLevel(LogLevel.Information) // ログレベルの設定
-                    .AddConsole(); // コンソールへのログ出力
-            });
-
-            var logger = loggerFactory.CreateLogger<BitFlyerClient>();
-            logger.LogInformation("The application has started.");
+            var logger = new Logger("app.log", Path.Combine(Directory.GetCurrentDirectory(), "logs"));            
 
             // APIクライアント
             var bitFlyerClient = new BitFlyerClient(configuration, logger);

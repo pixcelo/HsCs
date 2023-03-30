@@ -1,6 +1,5 @@
 ﻿using HsCs.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,14 +12,15 @@ namespace HsCs
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly string _apiSecret;
-        private readonly ILogger<BitFlyerClient> _logger;
+        private readonly Logger _logger;
 
-        public BitFlyerClient(IConfiguration configuration, ILogger<BitFlyerClient> logger)
+        public BitFlyerClient(IConfiguration configuration, Logger logger)
         {
             _httpClient = new HttpClient { BaseAddress = new Uri("https://api.bitflyer.com") };
             _apiKey = configuration["BitFlyer:ApiKey"];
             _apiSecret = configuration["BitFlyer:ApiSecret"];
             _logger = logger;
+            _logger.Log("test");
         }
 
         public async Task<string> SendOrderAsync(
@@ -51,7 +51,7 @@ namespace HsCs
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "SendOrderAsyncでエラーが発生しました。");
+                _logger.Log(ex + " SendOrderAsyncでエラーが発生しました。");
             }
 
             return string.Empty;
