@@ -237,7 +237,32 @@ namespace HsCs
             return JsonSerializer.Deserialize<List<BitFlyerPosition>>(jsonResponse);
         }
 
-        
+        /// <summary>
+        /// 取引手数料を取得
+        /// </summary>
+        /// <param name="productCode"></param>
+        /// <returns></returns>
+        public async Task<double> GetTradingCommissionAsync(string productCode)
+        {
+            try
+            {
+                var path = $"/v1/me/gettradingcommission?product_code={productCode}";
+
+                var response = await SendRequestAsync(HttpMethod.Get, path, string.Empty);
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                var jsonDocument = JsonDocument.Parse(jsonResponse);
+
+                var commissionRate = jsonDocument.RootElement.GetProperty("commission_rate").GetDouble();
+
+                return commissionRate / 100.0; // パーセント表記から実数に変換する
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(ex + " GetTradingCommissionAsyncでエラーが発生しました。");
+                return 0.0;
+            }
+        }
+
 
         private string CreateSignature(string secret, string message)
         {

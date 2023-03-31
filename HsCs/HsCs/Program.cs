@@ -19,6 +19,9 @@ namespace hscs
             // APIクライアント
             var bitFlyerClient = new BitFlyerClient(configuration, logger);
 
+            // 
+            var fee = await bitFlyerClient.GetTradingCommissionAsync("FX_BTC_JPY");
+
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
 
