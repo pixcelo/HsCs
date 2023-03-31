@@ -19,8 +19,8 @@ namespace hscs
             // APIクライアント
             var bitFlyerClient = new BitFlyerClient(configuration, logger);
 
-            // 
-            var fee = await bitFlyerClient.GetTradingCommissionAsync("FX_BTC_JPY");
+            // Tradeing Fee
+            double fee = await bitFlyerClient.GetTradingCommissionAsync("FX_BTC_JPY");
 
             // 約定履歴のリスト
             var executions = new List<BitFlyerExecution>();
@@ -85,7 +85,9 @@ namespace hscs
                     // 注文条件のチェック
                     double orderSize = 0.01;
                     double buyOrderPrice = median.GetValue() + bestBuyOffset;
-                    double sellOrderPrice = median.GetValue() + bestBuyOffset;
+                    double sellOrderPrice = median.GetValue() + bestSellOffset;
+
+                    Console.WriteLine($"The expected profit is {orderSize * (sellOrderPrice - buyOrderPrice) - fee}");
 
                     //int leverage = 1;
                     //double requiredMargin = CalculateRequiredMargin(orderSize, buyOrderPrice, leverage);
@@ -111,7 +113,7 @@ namespace hscs
                             var orderPrice = openOrder.Side == "BUY" ? buyOrderPrice : sellOrderPrice;
                             var orderId = bitFlyerClient.SendOrderAsync("FX_BTC_JPY", openOrder.Side, orderPrice, MINUTE_TO_EXPIRE, orderSize);
                         }
-                      
+
                     }
                     else
                     {
