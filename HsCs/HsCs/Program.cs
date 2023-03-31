@@ -54,8 +54,9 @@ namespace hscs
 
                 // 中央値を計算
                 List<double> prices = priceTracker.GetPrices(execution.ExecDate, execution.Price);
-                
-                int window = 10;
+                Console.WriteLine($"The prices count is {prices.Count}");
+
+                int window = 5;
 
                 if (prices.Count > window)
                 {
@@ -95,8 +96,8 @@ namespace hscs
                     // 現在のアクティブな注文を取得
                     var openOrders = await bitFlyerClient.GetOpenOrders();
 
-                    // 注文の有効期限
-                    const int MINUTE_TO_EXPIRE = 1;
+                    // 注文の有効期限 TODO:有効期限切れで約定せず、片側だけ建玉を保持した状態が発生する
+                    const int MINUTE_TO_EXPIRE = 30;
 
                     // 未約定の指値注文が存在する場合
                     if (openOrders.Count > 0)
@@ -124,6 +125,9 @@ namespace hscs
                         Console.WriteLine($"place order BUY : {buyOrderId}");
                         Console.WriteLine($"place order SELL : {sellOrderId}");
                     }
+
+                    // 建玉があって、反対売買の指値がない場合
+
 
                 }
 

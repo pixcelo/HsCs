@@ -17,9 +17,9 @@ public class Logger
 
     public void Log(string message)
     {
-        using (var writer = File.AppendText(_logFilePath))
+        using (var streamWriter = new StreamWriter(_logFilePath, true))
         {
-            writer.WriteLine($"{DateTime.Now}: {message}");
+            streamWriter.WriteLine($"{DateTime.Now}: {message}");
         }
     }
 }
