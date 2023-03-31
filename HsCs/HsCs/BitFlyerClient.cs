@@ -20,8 +20,7 @@ namespace HsCs
             _httpClient = new HttpClient { BaseAddress = new Uri("https://api.bitflyer.com") };
             _apiKey = configuration["BitFlyer:ApiKey"];
             _apiSecret = configuration["BitFlyer:ApiSecret"];
-            _logger = logger;
-            _logger.Log("test");
+            _logger = logger;            
         }
 
         public async Task<string> SendOrderAsync(
