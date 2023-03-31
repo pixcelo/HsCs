@@ -51,7 +51,8 @@ namespace HsCs
             }
             catch (Exception ex)
             {
-                _logger.Log(ex + " SendOrderAsyncでエラーが発生しました。");
+                Console.WriteLine("SendOrderAsyncでエラーが発生しました。");
+                _logger.Log($"{ex.Message} {ex.StackTrace}");
             }
 
             return string.Empty;
