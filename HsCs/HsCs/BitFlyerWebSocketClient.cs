@@ -80,12 +80,6 @@ namespace HsCs
             Console.WriteLine($"Restart WebSocket");
             await Task.Delay(500);
 
-            while (await IsTradingSuspended())
-            {
-                Console.WriteLine("メンテナンス中です。再試行します。");
-                await Task.Delay(TimeSpan.FromMinutes(1));
-            }
-
             await StartAsync(onExecution);
         }
 
