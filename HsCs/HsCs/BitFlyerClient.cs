@@ -47,7 +47,13 @@ namespace HsCs
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var jsonDocument = JsonDocument.Parse(jsonResponse);
 
-                return jsonDocument.RootElement.GetProperty("child_order_acceptance_id").GetString();
+                if (jsonDocument.RootElement.TryGetProperty("child_order_acceptance_id", out JsonElement childOrderAcceptanceId))
+                {
+                    return childOrderAcceptanceId.GetString();
+                }
+
+                Console.WriteLine($"API response: {jsonResponse}");
+                Console.WriteLine("APIから返されたレスポンスにchild_order_acceptance_idプロパティが存在しませんでした。");
             }
             catch (Exception ex)
             {

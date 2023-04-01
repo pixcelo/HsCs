@@ -78,7 +78,7 @@ namespace HsCs
         private async Task ReStartAsync(Action<BitFlyerExecution>  onExecution)
         {
             Console.WriteLine($"Restart WebSocket");
-            await Task.Delay(1000);
+            await Task.Delay(500);
 
             while (await IsTradingSuspended())
             {
@@ -103,6 +103,16 @@ namespace HsCs
         /// <returns></returns>
         private async Task<bool> IsTradingSuspended()
         {
+            // 午前3:55から午前4:15 はメンテナンス確認
+            var currentTime = DateTime.Now.TimeOfDay;
+            var maintenanceStartTime = TimeSpan.FromHours(3) + TimeSpan.FromMinutes(55);
+            var maintenanceEndTime = TimeSpan.FromHours(4) + TimeSpan.FromMinutes(15);
+
+            if (currentTime < maintenanceStartTime || currentTime > maintenanceEndTime)
+            {
+                return false;
+            }
+
             var response = await _httpClient.GetAsync("https://api.bitflyer.com/v1/gethealth");
             var responseContent = await response.Content.ReadAsStringAsync();
             using var jsonDocument = JsonDocument.Parse(responseContent);
