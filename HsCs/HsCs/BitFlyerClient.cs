@@ -1,6 +1,5 @@
 ﻿using HsCs.Models;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,8 +10,8 @@ namespace HsCs
     public class BitFlyerClient
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey;
-        private readonly string _apiSecret;
+        private readonly string? _apiKey;
+        private readonly string? _apiSecret;
         private readonly Logger _logger;
 
         public BitFlyerClient(IConfiguration configuration, Logger logger)
@@ -20,10 +19,15 @@ namespace HsCs
             _httpClient = new HttpClient { BaseAddress = new Uri("https://api.bitflyer.com") };
             _apiKey = configuration["BitFlyer:ApiKey"];
             _apiSecret = configuration["BitFlyer:ApiSecret"];
-            _logger = logger;            
+            _logger = logger;
+
+            if (string.IsNullOrEmpty(_apiKey) || string.IsNullOrEmpty(_apiSecret))
+            {
+                throw new ArgumentNullException("API keys are not found.");
+            }
         }
 
-        public async Task<string> SendOrderAsync(
+        public async Task<string?> SendOrderAsync(
             string productCode,
             string side,
             double price,
@@ -64,7 +68,7 @@ namespace HsCs
             return string.Empty;
         }
 
-        public async Task<string> SendMarketOrderAsync(string productCode, string side, double size)
+        public async Task<string?> SendMarketOrderAsync(string productCode, string side, double size)
         {
             var path = "/v1/me/sendchildorder";
             var body = JsonSerializer.Serialize(new
@@ -152,7 +156,7 @@ namespace HsCs
         /// アクティブな注文一覧を取得する
         /// </summary>
         /// <returns></returns>
-        public async Task<List<BitFlyerOrder>> GetOpenOrders()
+        public async Task<List<BitFlyerOrder>?> GetOpenOrders()
         {
             string path = "/v1/me/getchildorders?product_code=FX_BTC_JPY&child_order_state=ACTIVE";            
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
@@ -189,7 +193,7 @@ namespace HsCs
         /// <returns></returns>
         public async Task TakeProfitAsync(string productCode, double profitTarget)
         {
-            // 建玉一覧を取得
+            // 建玉一覧を取得  
             var positions = await GetPositionsAsync(productCode);
 
             // pnl が profitTarget 以上の建玉をフィルタリング
@@ -234,7 +238,7 @@ namespace HsCs
         /// </summary>
         /// <param name="productCode"></param>
         /// <returns></returns>
-        private async Task<List<BitFlyerPosition>> GetPositionsAsync(string productCode)
+        private async Task<List<BitFlyerPosition>?> GetPositionsAsync(string productCode)
         {
             string path = $"/v1/me/getpositions?product_code={productCode}";
            
@@ -270,7 +274,7 @@ namespace HsCs
         }
 
 
-        private string CreateSignature(string secret, string message)
+        private string CreateSignature(string? secret, string message)
         {
             using var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
             var hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(message));
