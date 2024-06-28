@@ -28,25 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            getbutton = new Button();
+            geButton = new Button();
+            postButton = new Button();
             SuspendLayout();
             // 
-            // getbutton
+            // geButton
             // 
-            getbutton.Location = new Point(56, 73);
-            getbutton.Name = "getbutton";
-            getbutton.Size = new Size(75, 23);
-            getbutton.TabIndex = 0;
-            getbutton.Text = "get";
-            getbutton.UseVisualStyleBackColor = true;
-            getbutton.Click += getbutton_Click;
+            geButton.Location = new Point(56, 73);
+            geButton.Name = "geButton";
+            geButton.Size = new Size(75, 23);
+            geButton.TabIndex = 0;
+            geButton.Text = "get";
+            geButton.UseVisualStyleBackColor = true;
+            geButton.Click += getButton_Click;
+            // 
+            // postButton
+            // 
+            postButton.Location = new Point(150, 73);
+            postButton.Name = "postButton";
+            postButton.Size = new Size(75, 23);
+            postButton.TabIndex = 1;
+            postButton.Text = "post";
+            postButton.UseVisualStyleBackColor = true;
+            postButton.Click += postButton_Click;
             // 
             // SampleForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(394, 450);
-            Controls.Add(getbutton);
+            Controls.Add(postButton);
+            Controls.Add(geButton);
             Name = "SampleForm";
             Text = "SampleForm";
             ResumeLayout(false);
@@ -54,6 +66,7 @@
 
         #endregion
 
-        private Button getbutton;
+        private Button geButton;
+        private Button postButton;
     }
 }

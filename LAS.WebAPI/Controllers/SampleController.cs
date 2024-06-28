@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LAS.Domain.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LAS.WebAPI.Controllers
 {
@@ -19,9 +20,9 @@ namespace LAS.WebAPI.Controllers
         // Post api/sample
         [HttpPost]
         [Route("")]
-        public IActionResult Post()
+        public IActionResult Post([FromBody] SampleModel model)
         {
-            return Ok("post");
+            return Ok($"Received: Name = {model.Name}, Value = {model.Value}");
         }
     }
 }
