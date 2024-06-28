@@ -3,6 +3,7 @@ var sampleSpecificOrigins = "sampleSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
+// https://learn.microsoft.com/ja-jp/aspnet/core/security/cors?view=aspnetcore-8.0
 // CORSƒ|ƒŠƒV[‚ÌÝ’è
 builder.Services.AddCors(options =>
 {
