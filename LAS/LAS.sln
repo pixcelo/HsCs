@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.WebAPI", "..\LAS.WebAPI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAS.UI.WinForm", "..\LAS.UI.WinForm\LAS.UI.WinForm.csproj", "{95A1F5B5-4027-4514-B23C-171C55980FED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAS.Lib.WebAccessor", "..\LAS.Lib.WebAccessor\LAS.Lib.WebAccessor.csproj", "{3CC55922-A3B0-44EF-9331-B519364957EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{95A1F5B5-4027-4514-B23C-171C55980FED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95A1F5B5-4027-4514-B23C-171C55980FED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95A1F5B5-4027-4514-B23C-171C55980FED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CC55922-A3B0-44EF-9331-B519364957EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CC55922-A3B0-44EF-9331-B519364957EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CC55922-A3B0-44EF-9331-B519364957EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CC55922-A3B0-44EF-9331-B519364957EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

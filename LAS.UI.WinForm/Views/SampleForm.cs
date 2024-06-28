@@ -6,11 +6,11 @@ namespace LAS.UI.WinForm.Views
     {
         private readonly ApiClient apiClient;
 
-        public SampleForm()
+        public SampleForm(ApiClient apiClient)
         {
             InitializeComponent();
 
-            this.apiClient = new ApiClient();
+            this.apiClient = apiClient;
         }
 
         /// <summary>
