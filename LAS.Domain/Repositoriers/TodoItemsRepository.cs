@@ -2,6 +2,7 @@
 using LAS.Infrastructure.SQLServer;
 using System.Data;
 using System.Data.SqlClient;
+using System.Xml.Serialization;
 
 namespace LAS.Domain.Repositoriers
 {
@@ -79,7 +80,7 @@ namespace LAS.Domain.Repositoriers
             return list;
         }
 
-        public void Insert(TodoItem todoItems)
+        public void Insert(TodoItem todoItem)
         {
             var query = @"
 INSERT INTO TodoItems (
@@ -101,11 +102,11 @@ VALUES (
                 SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB","LAS")))
             using (var command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@Title", todoItems.Title);
-                command.Parameters.AddWithValue("@Description", todoItems.Description);
-                command.Parameters.AddWithValue("@IsComplete", todoItems.IsComplete);
-                command.Parameters.AddWithValue("@DueDate", todoItems.DueDate);
-                command.Parameters.AddWithValue("@CreatedAt", todoItems.CreatedAt);
+                command.Parameters.AddWithValue("@Title", todoItem.Title);
+                command.Parameters.AddWithValue("@Description", todoItem.Description);
+                command.Parameters.AddWithValue("@IsComplete", todoItem.IsComplete);
+                command.Parameters.AddWithValue("@DueDate", todoItem.DueDate);
+                command.Parameters.AddWithValue("@CreatedAt", todoItem.CreatedAt);
 
                 connection.Open();
                 command.ExecuteNonQuery();
@@ -113,7 +114,7 @@ VALUES (
         }
 
 
-        public void Update(TodoItem todoItems)
+        public int Update(TodoItem todoItem)
         {
             var query = @"
 UPDATE TodoItems
@@ -130,17 +131,99 @@ WHERE Id = @Id
                 SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB","LAS")))
             using (var command = new SqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@Id", todoItems.Id);
-                command.Parameters.AddWithValue("@Title", todoItems.Title);
-                command.Parameters.AddWithValue("@Description", todoItems.Description);
-                command.Parameters.AddWithValue("@IsComplete", todoItems.IsComplete);
-                command.Parameters.AddWithValue("@DueDate", todoItems.DueDate);
-                command.Parameters.AddWithValue("@UpdatedAt", todoItems.UpdatedAt);
+                command.Parameters.AddWithValue("@Id", todoItem.Id);
+                command.Parameters.AddWithValue("@Title", todoItem.Title);
+                command.Parameters.AddWithValue("@Description", todoItem.Description);
+                command.Parameters.AddWithValue("@IsComplete", todoItem.IsComplete);
+                command.Parameters.AddWithValue("@DueDate", todoItem.DueDate);
+                command.Parameters.AddWithValue("@UpdatedAt", todoItem.UpdatedAt);
 
                 connection.Open();
-                command.ExecuteNonQuery();
+                var updateCount = command.ExecuteNonQuery();
+
+                return updateCount;
             }
         }
+
+        public void Upsert(TodoItem todoItem)
+        {
+            var updateCount = this.Update(todoItem);   
+            if (updateCount == 0)
+            {
+                this.Insert(todoItem);
+            }            
+        }
+
+//        public void Upsert(TodoItem todoItems)
+//        {
+//            var query = @"
+//MERGE INTO TodoItems as target
+//USING (values (
+//@Id,
+//@Title,
+//@Description,
+//@IsComplete,
+//@DueDate,
+//@CreatedAt,
+//@UpdatedAt,
+//@DeletedAt
+//)) as source (
+//Id,
+//Title,
+//Description,
+//IsComplete,
+//DueDate,
+//CreatedAt,
+//UpdatedAt,
+//DeletedAt
+//)
+//ON target.Id = source.Id
+//WHEN Matched THEN
+//    Update Set
+//        Title = source.Title,
+//        Description = source.Description,
+//        IsComplete = source.IsComplete,
+//        DueDate = source.DueDate,
+//        UpdatedAt = source.UpdatedAt,
+//        DeletedAt = source.DeletedAt
+//WHEN Not Matched THEN
+//    Insert (
+//        Title,
+//        Description,
+//        IsComplete,
+//        DueDate,
+//        CreatedAt,
+//        UpdatedAt,
+//        DeletedAt
+//    )
+//    Values (
+//        source.Title,
+//        source.Description,
+//        source.IsComplete,
+//        source.DueDate,
+//        source.CreatedAt,
+//        source.UpdatedAt,
+//        source.DeletedAt
+//    );
+//";
+
+//            using (var connection = new SqlConnection(
+//                SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB","LAS")))
+//            using (var command = new SqlCommand(query, connection))
+//            {
+//                command.Parameters.AddWithValue("@Id", todoItems.Id);
+//                command.Parameters.AddWithValue("@Title", todoItems.Title);
+//                command.Parameters.AddWithValue("@Description", todoItems.Description);
+//                command.Parameters.AddWithValue("@IsComplete", todoItems.IsComplete);
+//                command.Parameters.AddWithValue("@DueDate", todoItems.DueDate);
+//                command.Parameters.AddWithValue("@CreatedAt", todoItems.CreatedAt);
+//                command.Parameters.AddWithValue("@UpdatedAt", todoItems.UpdatedAt);
+//                command.Parameters.AddWithValue("@DeletedAt", todoItems.DeletedAt);
+
+//                connection.Open();
+//                command.ExecuteNonQuery();
+//            }
+//        }
 
     }
 }

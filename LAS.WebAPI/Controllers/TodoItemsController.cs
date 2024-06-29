@@ -65,5 +65,26 @@ namespace LAS.WebAPI.Controllers
 
             return Ok("ok");
         }
+
+        // Put api/TodoItems/upsert
+        [HttpPut]
+        [Route("upsert")]
+        public IActionResult Upsert()
+        {
+            var todoItem = new TodoItem()
+            {
+                Id = 5,
+                Title = "newTitle",
+                Description = "CCC",
+                IsComplete = false,
+                DueDate = Convert.ToDateTime("2024-07-01"),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            this.todoItemsService.Upsert(todoItem);
+
+            return Ok("ok");
+        }
     }
 }
