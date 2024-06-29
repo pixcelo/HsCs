@@ -30,6 +30,8 @@
         {
             geButton = new Button();
             postButton = new Button();
+            todoItemDataGridView = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)todoItemDataGridView).BeginInit();
             SuspendLayout();
             // 
             // geButton
@@ -52,15 +54,26 @@
             postButton.UseVisualStyleBackColor = true;
             postButton.Click += postButton_Click;
             // 
+            // todoItemDataGridView
+            // 
+            todoItemDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            todoItemDataGridView.Dock = DockStyle.Bottom;
+            todoItemDataGridView.Location = new Point(0, 130);
+            todoItemDataGridView.Name = "todoItemDataGridView";
+            todoItemDataGridView.Size = new Size(394, 150);
+            todoItemDataGridView.TabIndex = 2;
+            // 
             // SampleForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(394, 450);
+            ClientSize = new Size(394, 280);
+            Controls.Add(todoItemDataGridView);
             Controls.Add(postButton);
             Controls.Add(geButton);
             Name = "SampleForm";
             Text = "SampleForm";
+            ((System.ComponentModel.ISupportInitialize)todoItemDataGridView).EndInit();
             ResumeLayout(false);
         }
 
@@ -68,5 +81,6 @@
 
         private Button geButton;
         private Button postButton;
+        private DataGridView todoItemDataGridView;
     }
 }
