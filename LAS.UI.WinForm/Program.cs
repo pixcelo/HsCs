@@ -17,6 +17,8 @@ namespace LAS.UI.WinForm
 
             using (var serviceProvider = services.BuildServiceProvider())
             {
+                Application.ThreadException += Application_ThreadException;
+
                 // To customize application configuration such as set high DPI settings or default font,
                 // see https://aka.ms/applicationconfiguration.
                 ApplicationConfiguration.Initialize();
@@ -24,7 +26,7 @@ namespace LAS.UI.WinForm
                 var form = serviceProvider.GetRequiredService<SampleForm>();
                 Application.Run(form);
             }
-        }
+        }        
 
         /// <summary>
         /// DIコンテナの設定
@@ -34,6 +36,20 @@ namespace LAS.UI.WinForm
         {
             services.AddSingleton<SampleForm>();
             services.AddSingleton<ApiClient>();
+        }
+
+        /// <summary>
+        /// Form全体の例外処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            MessageBox.Show(
+                e.Exception.Message,
+                "Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
     }
 }
