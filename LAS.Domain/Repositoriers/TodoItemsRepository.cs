@@ -7,9 +7,9 @@ namespace LAS.Domain.Repositoriers
 {
     public class TodoItemsRepository : ITodoItemsRepository
     {
-        public List<TodoItems> FindWithSqlDataReader()
+        public List<TodoItem> FindWithSqlDataReader()
         {
-            var list = new List<TodoItems>();
+            var list = new List<TodoItem>();
             var query = "SELECT * FROM TodoItems";
 
             using (var connection = new SqlConnection(
@@ -21,7 +21,7 @@ namespace LAS.Domain.Repositoriers
                 {
                     while (reader.Read())
                     {
-                        list.Add(new TodoItems
+                        list.Add(new TodoItem
                         {
                             // インデックスで指定
                             //Id = reader.GetInt64(0),
@@ -50,9 +50,9 @@ namespace LAS.Domain.Repositoriers
             return list;
         }
 
-        public List<TodoItems> FindWithDataTable()
+        public List<TodoItem> FindWithDataTable()
         {
-            var list = new List<TodoItems>();
+            var list = new List<TodoItem>();
             var query = "SELECT * FROM TodoItems";
 
             var dataTable = new DataTable();
@@ -63,7 +63,7 @@ namespace LAS.Domain.Repositoriers
                 adapter.Fill(dataTable);
 
                 list = dataTable.AsEnumerable().Select(row =>
-                    new TodoItems
+                    new TodoItem
                     {
                         Id = row.Field<long>("Id"),
                         Title = row.Field<string>("Title"),
@@ -77,6 +77,39 @@ namespace LAS.Domain.Repositoriers
             }
 
             return list;
-        }        
+        }
+
+        public void Insert(TodoItem todoItems)
+        {
+            var query = @"
+INSERT INTO TodoItems (
+    Title,
+    Description,
+    IsComplete,
+    DueDate,
+    CreatedAt
+)
+VALUES (
+    @Title,
+    @Description,
+    @IsComplete,
+    @DueDate,
+    @CreatedAt
+)";
+
+            using (var connection = new SqlConnection(
+                SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB","LAS")))
+            using (var command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@Title", todoItems.Title);
+                command.Parameters.AddWithValue("@Description", todoItems.Description);
+                command.Parameters.AddWithValue("@IsComplete", todoItems.IsComplete);
+                command.Parameters.AddWithValue("@DueDate", todoItems.DueDate);
+                command.Parameters.AddWithValue("@CreatedAt", todoItems.CreatedAt);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }

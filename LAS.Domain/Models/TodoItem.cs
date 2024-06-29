@@ -1,6 +1,6 @@
 ﻿namespace LAS.Domain.Models
 {
-    public class TodoItems
+    public class TodoItem
     {
         /// <summary>
         /// ID

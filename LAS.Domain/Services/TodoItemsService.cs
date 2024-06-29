@@ -1,4 +1,5 @@
-﻿using LAS.Domain.Repositoriers;
+﻿using LAS.Domain.Models;
+using LAS.Domain.Repositoriers;
 
 namespace LAS.Domain.Services
 {
@@ -15,12 +16,14 @@ namespace LAS.Domain.Services
             this.todoItemsRepository = todoItemsRepository;
         }
 
-        /// <summary>
-        /// TODOアイテムを取得する
-        /// </summary>
         public void FindTodoItems()
         {
             var list = this.todoItemsRepository.FindWithSqlDataReader();
+        }
+
+        public void Insert(TodoItem todoItem)
+        {
+            this.todoItemsRepository.Insert(todoItem);
         }
     }
 }

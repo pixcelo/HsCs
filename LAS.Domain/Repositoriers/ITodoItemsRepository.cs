@@ -8,12 +8,18 @@ namespace LAS.Domain.Repositoriers
         /// TODOアイテムを取得する (SqlDataReaderを使用)
         /// </summary>
         /// <returns></returns>
-        List<TodoItems> FindWithSqlDataReader();
+        List<TodoItem> FindWithSqlDataReader();
 
         /// <summary>
         /// TODOアイテムを取得する (データテーブルを使用)
         /// </summary>
         /// <returns></returns>
-        List<TodoItems> FindWithDataTable();
+        List<TodoItem> FindWithDataTable();
+
+        /// <summary>
+        /// TODOアイテムを追加する
+        /// </summary>
+        /// <param name="todoItems"></param>
+        void Insert(TodoItem todoItems);
     }
 }

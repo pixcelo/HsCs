@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LAS.Domain.Models;
 
 namespace LAS.Domain.Services
 {
@@ -12,5 +8,11 @@ namespace LAS.Domain.Services
         /// TODOアイテムを取得する
         /// </summary>
         void FindTodoItems();
+
+        /// <summary>
+        /// TODOアイテムを追加する
+        /// </summary>
+        /// <param name="todoItem"></param>
+        void Insert(TodoItem todoItem);
     }
 }
