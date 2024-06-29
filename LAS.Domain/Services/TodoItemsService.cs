@@ -20,7 +20,7 @@ namespace LAS.Domain.Services
         /// </summary>
         public void FindTodoItems()
         {
-            var list = this.todoItemsRepository.FindWithDataTable();
+            var list = this.todoItemsRepository.FindWithSqlDataReader();
         }
     }
 }
