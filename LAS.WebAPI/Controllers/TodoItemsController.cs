@@ -46,5 +46,24 @@ namespace LAS.WebAPI.Controllers
 
             return Ok("ok");
         }
+
+        // Put api/TodoItems
+        [HttpPut]
+        public IActionResult Put()
+        {
+            var todoItem = new TodoItem()
+            {
+                Id = 1,
+                Title = "Title",
+                Description = "BBB",
+                IsComplete = true,
+                DueDate = Convert.ToDateTime("2024-07-01"),
+                UpdatedAt = DateTime.Now
+            };
+
+            this.todoItemsService.Update(todoItem);
+
+            return Ok("ok");
+        }
     }
 }

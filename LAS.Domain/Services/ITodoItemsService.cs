@@ -14,5 +14,11 @@ namespace LAS.Domain.Services
         /// </summary>
         /// <param name="todoItem"></param>
         void Insert(TodoItem todoItem);
+
+        /// <summary>
+        /// TODOアイテムを更新する
+        /// </summary>
+        /// <param name="todoItem"></param>
+        void Update(TodoItem todoItem);
     }
 }

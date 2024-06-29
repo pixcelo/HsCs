@@ -21,5 +21,11 @@ namespace LAS.Domain.Repositoriers
         /// </summary>
         /// <param name="todoItems"></param>
         void Insert(TodoItem todoItems);
+
+        /// <summary>
+        /// TODOアイテムを更新する
+        /// </summary>
+        /// <param name="todoItems"></param>
+        void Update(TodoItem todoItems);
     }
 }

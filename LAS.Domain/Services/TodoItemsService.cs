@@ -25,5 +25,10 @@ namespace LAS.Domain.Services
         {
             this.todoItemsRepository.Insert(todoItem);
         }
+
+        public void Update(TodoItem todoItem)
+        {
+            this.todoItemsRepository.Update(todoItem);
+        }
     }
 }

@@ -111,5 +111,36 @@ VALUES (
                 command.ExecuteNonQuery();
             }
         }
+
+
+        public void Update(TodoItem todoItems)
+        {
+            var query = @"
+UPDATE TodoItems
+SET
+Title = @Title,
+Description = @Description,
+IsComplete = @IsComplete,
+DueDate = @DueDate,
+UpdatedAt = @UpdatedAt
+WHERE Id = @Id
+";
+
+            using (var connection = new SqlConnection(
+                SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB","LAS")))
+            using (var command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@Id", todoItems.Id);
+                command.Parameters.AddWithValue("@Title", todoItems.Title);
+                command.Parameters.AddWithValue("@Description", todoItems.Description);
+                command.Parameters.AddWithValue("@IsComplete", todoItems.IsComplete);
+                command.Parameters.AddWithValue("@DueDate", todoItems.DueDate);
+                command.Parameters.AddWithValue("@UpdatedAt", todoItems.UpdatedAt);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
     }
 }
