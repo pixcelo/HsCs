@@ -1,4 +1,7 @@
 // 名前付きCORSポリシー
+using LAS.Domain.Repositoriers;
+using LAS.Domain.Services;
+
 var sampleSpecificOrigins = "sampleSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +25,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// DIコンテナの設定
+builder.Services.AddTransient<ITodoItemsService, TodoItemsService>();
+builder.Services.AddTransient<ITodoItemsRepository, TodoItemsRepository>();
 
 var app = builder.Build();
 
