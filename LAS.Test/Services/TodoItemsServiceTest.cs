@@ -6,7 +6,7 @@ using Moq;
 namespace LAS.Test.Services
 {
     /// <summary>
-    /// TODOアイテムサービス
+    /// TODOアイテムサービステスト
     /// </summary>
     public class TodoItemsServiceTest
     {
@@ -28,6 +28,25 @@ namespace LAS.Test.Services
 
             // Assert
             Assert.True(list.Count == 1);
+        }
+
+        /// <summary>
+        /// Insretの正常系テスト
+        /// </summary>
+        [Fact]
+        public void OkInsertTest()
+        {
+            // Arrange
+            var todoItemRepository = new Mock<ITodoItemsRepository>();
+            todoItemRepository
+                .Setup(x => x.InsertWithDapper(It.IsAny<TodoItem>()));
+            var todoItemsService = new TodoItemsService(todoItemRepository.Object);
+
+            // Act
+            todoItemsService.Insert(new TodoItem());
+
+            // Assert
+            todoItemRepository.Verify(x => x.InsertWithDapper(It.IsAny<TodoItem>()), Times.Once);
         }
     }
 }
