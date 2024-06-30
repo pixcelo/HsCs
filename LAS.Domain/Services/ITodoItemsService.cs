@@ -26,5 +26,11 @@ namespace LAS.Domain.Services
         /// </summary>
         /// <param name="todoItem"></param>
         void Upsert(TodoItem todoItem);
+
+        /// <summary>
+        /// TODOアイテムを削除する
+        /// </summary>
+        /// <param name="id"></param>
+        void Delete(long id);
     }
 }

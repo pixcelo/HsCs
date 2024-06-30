@@ -225,5 +225,23 @@ WHERE Id = @Id
 //            }
 //        }
 
+        public void Delete(long id)
+        {
+            var query = @"
+DELETE FROM TodoItems
+WHERE Id = @Id
+";
+
+            using (var connection = new SqlConnection(
+                SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB","LAS")))
+            using (var command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@Id", id);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+
     }
 }

@@ -86,5 +86,14 @@ namespace LAS.WebAPI.Controllers
 
             return Ok("ok");
         }
+
+        // Delete api/TodoItems
+        [HttpDelete]
+        public IActionResult Delete()
+        {
+            this.todoItemsService.Delete(5);
+
+            return Ok("ok");
+        }
     }
 }

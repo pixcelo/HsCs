@@ -35,5 +35,10 @@ namespace LAS.Domain.Services
         {
             this.todoItemsRepository.Upsert(todoItem);
         }
+
+        public void Delete(long id)
+        {
+            this.todoItemsRepository.Delete(id);
+        }
     }
 }

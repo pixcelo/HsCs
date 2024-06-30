@@ -33,5 +33,11 @@ namespace LAS.Domain.Repositoriers
         /// </summary>
         /// <param name="todoItems"></param>
         void Upsert(TodoItem todoItems);
+
+        /// <summary>
+        /// TODOアイテムを削除する
+        /// </summary>
+        /// <param name="id"></param>
+        void Delete(long id);
     }
 }
