@@ -18,7 +18,7 @@ namespace LAS.Domain.Services
 
         public void FindTodoItems()
         {
-            var list = this.todoItemsRepository.FindWithSqlDataReader();
+            var list = this.todoItemsRepository.FindWithDapper();
         }
 
         public void Insert(TodoItem todoItem)

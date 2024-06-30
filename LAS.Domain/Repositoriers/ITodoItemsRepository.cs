@@ -17,6 +17,12 @@ namespace LAS.Domain.Repositoriers
         List<TodoItem> FindWithDataTable();
 
         /// <summary>
+        /// TODOアイテムを取得する (Dapperを使用)
+        /// </summary>
+        /// <returns></returns>
+        List<TodoItem> FindWithDapper();
+
+        /// <summary>
         /// TODOアイテムを追加する
         /// </summary>
         /// <param name="todoItems"></param>

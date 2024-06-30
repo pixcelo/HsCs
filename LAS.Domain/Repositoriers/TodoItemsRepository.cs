@@ -1,4 +1,5 @@
-﻿using LAS.Domain.Models;
+﻿using Dapper;
+using LAS.Domain.Models;
 using LAS.Infrastructure.SQLServer;
 using System.Data;
 using System.Data.SqlClient;
@@ -78,6 +79,17 @@ namespace LAS.Domain.Repositoriers
             }
 
             return list;
+        }
+
+        public List<TodoItem> FindWithDapper()
+        {
+            var query = "SELECT * FROM TodoItems";
+
+            using (var connection = new SqlConnection(
+                SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB", "LAS")))
+            {
+                return connection.Query<TodoItem>(query).ToList();
+            }
         }
 
         public void Insert(TodoItem todoItem)
