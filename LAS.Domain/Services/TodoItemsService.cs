@@ -23,7 +23,7 @@ namespace LAS.Domain.Services
 
         public void Insert(TodoItem todoItem)
         {
-            this.todoItemsRepository.Insert(todoItem);
+            this.todoItemsRepository.InsertWithDapper(todoItem);
         }
 
         public int Update(TodoItem todoItem)

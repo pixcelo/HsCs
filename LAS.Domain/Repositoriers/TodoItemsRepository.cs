@@ -125,6 +125,30 @@ VALUES (
             }
         }
 
+        public void InsertWithDapper(TodoItem todoItem)
+        {
+            var query = @"
+INSERT INTO TodoItems (
+    Title,
+    Description,
+    IsComplete,
+    DueDate,
+    CreatedAt
+)
+VALUES (
+    @Title,
+    @Description,
+    @IsComplete,
+    @DueDate,
+    @CreatedAt
+)";
+
+            using (var connection = new SqlConnection(
+                SQLServerHelper.GetConnectionStringWithWindowsAuth("(localdb)\\MSSQLLocalDB", "LAS")))           
+            {
+                connection.Execute(query, todoItem);
+            }
+        }
 
         public int Update(TodoItem todoItem)
         {

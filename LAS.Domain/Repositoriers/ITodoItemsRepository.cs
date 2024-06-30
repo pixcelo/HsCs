@@ -29,6 +29,12 @@ namespace LAS.Domain.Repositoriers
         void Insert(TodoItem todoItems);
 
         /// <summary>
+        /// TODOアイテムを追加する (Dapperを使用)
+        /// </summary>
+        /// <param name="todoItem"></param>
+        void InsertWithDapper(TodoItem todoItem);
+
+        /// <summary>
         /// TODOアイテムを更新する
         /// </summary>
         /// <param name="todoItems"></param>
