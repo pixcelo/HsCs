@@ -16,9 +16,9 @@ namespace LAS.Domain.Services
             this.todoItemsRepository = todoItemsRepository;
         }
 
-        public void FindTodoItems()
+        public List<TodoItem> FindTodoItems()
         {
-            var list = this.todoItemsRepository.FindWithDapper();
+            return this.todoItemsRepository.FindWithDapper();
         }
 
         public void Insert(TodoItem todoItem)

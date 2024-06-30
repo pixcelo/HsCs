@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.UI.Web", "..\LAS.UI.Web
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.WebAPI", "..\LAS.WebAPI\LAS.WebAPI.csproj", "{BEDBC42A-23E0-4198-AEC9-76C9130C4C0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAS.UI.WinForm", "..\LAS.UI.WinForm\LAS.UI.WinForm.csproj", "{95A1F5B5-4027-4514-B23C-171C55980FED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.UI.WinForm", "..\LAS.UI.WinForm\LAS.UI.WinForm.csproj", "{95A1F5B5-4027-4514-B23C-171C55980FED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAS.Lib.WebAccessor", "..\LAS.Lib.WebAccessor\LAS.Lib.WebAccessor.csproj", "{3CC55922-A3B0-44EF-9331-B519364957EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.Lib.WebAccessor", "..\LAS.Lib.WebAccessor\LAS.Lib.WebAccessor.csproj", "{3CC55922-A3B0-44EF-9331-B519364957EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.Domain", "..\LAS.Domain\LAS.Domain.csproj", "{BA03164A-519A-49A1-82C0-624B54A59868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAS.Infrastructure", "..\LAS.Infrastructure\LAS.Infrastructure.csproj", "{E16ACE37-2880-4D2C-8481-1D1903A597DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.Infrastructure", "..\LAS.Infrastructure\LAS.Infrastructure.csproj", "{E16ACE37-2880-4D2C-8481-1D1903A597DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LAS.Test", "..\LAS.Test\LAS.Test.csproj", "{C15344B5-441D-4F5A-9C33-6C96DDF18163}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{E16ACE37-2880-4D2C-8481-1D1903A597DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E16ACE37-2880-4D2C-8481-1D1903A597DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E16ACE37-2880-4D2C-8481-1D1903A597DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C15344B5-441D-4F5A-9C33-6C96DDF18163}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C15344B5-441D-4F5A-9C33-6C96DDF18163}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C15344B5-441D-4F5A-9C33-6C96DDF18163}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C15344B5-441D-4F5A-9C33-6C96DDF18163}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
