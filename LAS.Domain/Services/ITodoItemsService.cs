@@ -7,7 +7,7 @@ namespace LAS.Domain.Services
         /// <summary>
         /// TODOアイテムを取得する
         /// </summary>
-        void FindTodoItems();
+        List<TodoItem> FindTodoItems();
 
         /// <summary>
         /// TODOアイテムを追加する
