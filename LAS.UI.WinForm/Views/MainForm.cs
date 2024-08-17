@@ -3,11 +3,11 @@ using LAS.Lib.WebAccessor;
 
 namespace LAS.UI.WinForm.Views
 {
-    public partial class SampleForm : Form
+    public partial class MainForm : Form
     {
         private readonly ApiClient apiClient;
 
-        public SampleForm(ApiClient apiClient)
+        public MainForm(ApiClient apiClient)
         {
             InitializeComponent();
 

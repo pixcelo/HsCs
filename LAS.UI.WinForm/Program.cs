@@ -23,7 +23,7 @@ namespace LAS.UI.WinForm
                 // see https://aka.ms/applicationconfiguration.
                 ApplicationConfiguration.Initialize();
 
-                var form = serviceProvider.GetRequiredService<SampleForm>();
+                var form = serviceProvider.GetRequiredService<MainForm>();
                 Application.Run(form);
             }
         }        
@@ -34,7 +34,7 @@ namespace LAS.UI.WinForm
         /// <param name="services"></param>
         private static void ConfigureServices(ServiceCollection services)
         {
-            services.AddSingleton<SampleForm>();
+            services.AddSingleton<MainForm>();
             services.AddSingleton<ApiClient>();
         }
 
