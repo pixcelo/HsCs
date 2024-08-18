@@ -1,5 +1,4 @@
-﻿using LAS.Domain.Models;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 namespace LAS.Lib.WebAccessor
@@ -35,7 +34,7 @@ namespace LAS.Lib.WebAccessor
         /// <param name="method"></param>
         /// <param name="content"></param>
         /// <returns></returns>
-        private static async Task<T?> SendRequestAsync<T>(
+        public static async Task<T?> SendRequestAsync<T>(
             string apiPath,
             HttpMethod method,
             object? content = null)
@@ -61,26 +60,6 @@ namespace LAS.Lib.WebAccessor
                 Console.WriteLine($"Request error: {ex.Message}");
                 return default;
             }
-        }
-
-        public static Task<IEnumerable<TodoItem>?> GetTodoItemsAsync()
-        {
-            return SendRequestAsync<IEnumerable<TodoItem>?>("api/TodoItems", HttpMethod.Get);
-        }
-
-        public static Task<TodoItem?> CreateTodoItemAsync(TodoItem item)
-        {
-            return SendRequestAsync<TodoItem>("api/TodoItems", HttpMethod.Post, item);
-        }
-
-        public static Task<TodoItem?> UpdateTodoItemAsync(TodoItem item)
-        {
-            return SendRequestAsync<TodoItem>($"api/TodoItems/{item.Id}", HttpMethod.Put, item);
-        }
-
-        public static Task<bool> DeleteTodoItemAsync(int id)
-        {
-            return SendRequestAsync<bool>($"api/TodoItems/{id}", HttpMethod.Delete);
         }
     }
 }

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LAS.Domain\LAS.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
