@@ -19,14 +19,11 @@ namespace LAS.WebAPI.Controllers
             this.todoItemsService = todoItemsService;
         }        
 
-        // Get api/TodoItems/get
+        // Get api/TodoItems
         [HttpGet]
-        [Route("get")]
-        public IActionResult Get()
+        public ActionResult<IEnumerable<TodoItem>?> Get()
         {
-            this.todoItemsService.FindTodoItems();
-
-            return Ok("ok");
+            return this.todoItemsService?.FindTodoItems();            
         }
 
         // Post api/TodoItems

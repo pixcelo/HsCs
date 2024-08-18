@@ -18,9 +18,10 @@ namespace LAS.UI.WinForm.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void getButton_Click(object sender, EventArgs e)
+        private async void getButton_Click(object sender, EventArgs e)
         {
-            var todoItems = WebAccessor.GetTodoItemsAsync();
+            var todoItems = await WebAccessor.GetTodoItemsAsync();            
+            this.todoItemDataGridView.DataSource = todoItems;            
         }
 
         /// <summary>

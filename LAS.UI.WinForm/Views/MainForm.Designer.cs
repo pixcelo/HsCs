@@ -64,14 +64,14 @@
             this.todoItemDataGridView.Margin = new Padding(3, 4, 3, 4);
             this.todoItemDataGridView.Name = "todoItemDataGridView";
             this.todoItemDataGridView.RowHeadersWidth = 51;
-            this.todoItemDataGridView.Size = new Size(450, 200);
+            this.todoItemDataGridView.Size = new Size(1198, 200);
             this.todoItemDataGridView.TabIndex = 2;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new SizeF(8F, 20F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(450, 373);
+            this.ClientSize = new Size(1198, 373);
             this.Controls.Add(this.todoItemDataGridView);
             this.Controls.Add(this.postButton);
             this.Controls.Add(this.geButton);

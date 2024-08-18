@@ -8,7 +8,7 @@ namespace LAS.Lib.WebAccessor
     {
         private static HttpClient? httpClient;
 
-        private static readonly string baseUrl = "https://localhost:5001/";
+        private static readonly string baseUrl = "https://localhost:7037/";
 
         /// <summary>
         /// HttpClientのインスタンスを取得する
@@ -18,7 +18,10 @@ namespace LAS.Lib.WebAccessor
         {
             if (httpClient is null)
             {
-                httpClient = new HttpClient();
+                httpClient = new HttpClient()
+                {
+                    BaseAddress = new Uri(baseUrl)
+                };
             }
 
             return httpClient;
@@ -40,7 +43,7 @@ namespace LAS.Lib.WebAccessor
             try
             {
                 var client = CreateClient();
-                var request = new HttpRequestMessage(method, baseUrl + apiPath);
+                var request = new HttpRequestMessage(method, client.BaseAddress + apiPath);
 
                 if (content != null)
                 {
@@ -48,7 +51,7 @@ namespace LAS.Lib.WebAccessor
                     request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 }
 
-                var response = await client.SendAsync(request);
+                var response = await client.SendAsync(request);                
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<T>(responseContent);
@@ -62,7 +65,7 @@ namespace LAS.Lib.WebAccessor
 
         public static Task<IEnumerable<TodoItem>?> GetTodoItemsAsync()
         {
-            return SendRequestAsync<IEnumerable<TodoItem>>("api/TodoItems", HttpMethod.Get);
+            return SendRequestAsync<IEnumerable<TodoItem>?>("api/TodoItems", HttpMethod.Get);
         }
 
         public static Task<TodoItem?> CreateTodoItemAsync(TodoItem item)
